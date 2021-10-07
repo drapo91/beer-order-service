@@ -15,8 +15,16 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package guru.sfg.beer.order.service.web.model;
+package guru.sfg.beer.order.service.domain;
 
-public enum OrderStatusEnum {
-    NEW, READY, PICKED_UP
+public enum BeerOrderStatus {
+    NEW,
+    VALIDATED,
+    VALIDATION_EXCEPTION,
+    ALLOCATED,
+    ALLOCATION_EXCEPTION,
+    PENDING_INVENTORY,
+    PICKED_UP,
+    DELIVERED,
+    DELIVERY_EXCEPTION
 }
