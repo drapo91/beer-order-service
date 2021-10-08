@@ -2,7 +2,9 @@ package com.drapo.beer.order.service.sm;
 
 import com.drapo.beer.order.service.domain.BeerOrderEvent;
 import com.drapo.beer.order.service.domain.BeerOrderStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.statemachine.action.Action;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.StateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
@@ -12,7 +14,9 @@ import java.util.EnumSet;
 
 @Configuration
 @EnableStateMachineFactory
+@RequiredArgsConstructor
 public class BeerOrderStateMachineConfig extends StateMachineConfigurerAdapter<BeerOrderStatus, BeerOrderEvent> {
+    private final Action<BeerOrderStatus, BeerOrderEvent> validateOrderAction;
 
     @Override
     public void configure(StateMachineStateConfigurer<BeerOrderStatus, BeerOrderEvent> states) throws Exception {
@@ -32,9 +36,10 @@ public class BeerOrderStateMachineConfig extends StateMachineConfigurerAdapter<B
         transitions.withExternal()
                 //todo add action
                 .source(BeerOrderStatus.NEW).target(BeerOrderStatus.VALIDATION_PENDING).event(BeerOrderEvent.VALIDATE_ORDER)
-                .and().withExternal()
+                .action(validateOrderAction)
+            .and().withExternal()
                 .source(BeerOrderStatus.NEW).target(BeerOrderStatus.VALIDATED).event(BeerOrderEvent.VALIDATION_PASSED)
-                .and().withExternal()
+            .and().withExternal()
                 .source(BeerOrderStatus.NEW).target(BeerOrderStatus.VALIDATION_EXCEPTION).event(BeerOrderEvent.VALIDATION_FAILED);
     }
 }
