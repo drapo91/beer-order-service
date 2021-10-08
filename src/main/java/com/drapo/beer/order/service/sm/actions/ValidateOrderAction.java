@@ -7,7 +7,7 @@ import com.drapo.beer.order.service.domain.BeerOrderStatus;
 import com.drapo.beer.order.service.repositories.BeerOrderRepository;
 import com.drapo.beer.order.service.services.BeerOrderManagerImpl;
 import com.drapo.beer.order.service.web.mappers.BeerOrderMapper;
-import com.drapo.brewery.model.events.ValidateOrderRequest;
+import com.drapo.brewery.model.events.ValidateOrderRequestEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.core.JmsTemplate;
@@ -30,7 +30,7 @@ public class ValidateOrderAction implements Action<BeerOrderStatus, BeerOrderEve
         String beerOrderId = (String) stateContext.getMessage().getHeaders().get(BeerOrderManagerImpl.ORDER_ID_HEADER);
         BeerOrder beerOrder = beerOrderRepository.findOneById(UUID.fromString(beerOrderId));
 
-        jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_QUEUE, ValidateOrderRequest.builder()
+        jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_QUEUE, ValidateOrderRequestEvent.builder()
                 .beerOrder(beerOrderMapper.beerOrderToDto(beerOrder))
                 .build());
 
